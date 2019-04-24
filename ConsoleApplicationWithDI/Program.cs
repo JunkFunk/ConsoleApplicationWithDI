@@ -1,9 +1,12 @@
 ﻿using ConsoleApplicationWithDI.Container;
 using ConsoleApplicationWithDI.Model;
+using InversionOfControl.Extension;
+using InversionOfControl.Shared.Contract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ConsoleApplicationWithDI
@@ -41,10 +44,12 @@ namespace ConsoleApplicationWithDI
             serviceCollection.Configure<AppSetting>(configuration.GetSection("Configuration"));
 
             // add services
-            serviceCollection.AddTransient<ITestService, TestService>();
+            serviceCollection.AddInversionOfControlModule(GetModule);
+        }
 
-            // add app
-            serviceCollection.AddTransient<App>();
+        private static IEnumerable<IInversionOfControlModule> GetModule()
+        {
+            yield return new ContainerModule();
         }
     }
 }
